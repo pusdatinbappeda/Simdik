@@ -3,179 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Informasi Manajemen Data Indikator Kinerja (SIMDIK)</title>
+    <title>Dashboard - SIMDIK</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        body { font-family: 'Inter', sans-serif; }
+        
         @media print {
             body { background-color: white !important; }
             .non-cetak { display: none !important; }
             table { width: 100% !important; border-collapse: collapse !important; }
-            th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 9pt !important; padding: 6px !important; }
-            .max-w-6xl { max-width: 100% !important; box-shadow: none !important; }
+            th, td { border: 1px solid #e2e8f0 !important; color: #000 !important; font-size: 9pt !important; padding: 8px !important; }
+            .max-w-7xl { max-width: 100% !important; }
         }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* Custom Scrollbar Minimalis */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Efek Kaca (Glassmorphism) Halus untuk Header Tabel */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
     </style>
 </head>
-<body class="bg-[#f1f5f9] font-sans antialiased p-3 md:p-6 text-slate-800 transition-colors duration-300">
+<body class="bg-[#fafafa] text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
 
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto p-4 sm:p-8 space-y-8">
         
-        <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 md:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between items-center gap-4 non-cetak relative overflow-hidden border border-slate-800">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
-            <div class="text-center md:text-left z-10">
-                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] uppercase font-extrabold tracking-widest px-3 py-1 rounded-full backdrop-blur-sm">Database Terintegrasi</span>
-                <h1 class="text-3xl font-black tracking-tight mt-2 bg-gradient-to-r from-white via-slate-100 to-blue-200 bg-clip-text text-transparent">SIMDIK</h1>
-                <p class="text-xs text-slate-400 mt-1 font-medium">Sistem Informasi Manajemen Data Indikator Kinerja SKPK</p>
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-slate-200 non-cetak">
+            <div>
+                <p class="text-xs font-semibold text-blue-600 tracking-widest uppercase mb-1.5">Pusat Data dan Informasi</p>
+                <h1 class="text-3xl font-light text-slate-900 tracking-tight">Dashboard <span class="font-bold">SAKIP & LKjIP</span></h1>
+                <p class="text-sm text-slate-500 mt-1">Sistem Informasi Manajemen Data Indikator Kinerja SKPK</p>
             </div>
-            <div class="flex items-center gap-3 z-10 flex-wrap justify-center">
-                <label for="uploadExcel" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-4 py-2.5 rounded-xl border border-slate-700 shadow-lg text-xs text-slate-200 font-bold cursor-pointer transition-all active:scale-[0.97]">
-                    <span>🔄 Ganti/Perbarui Data (.xlsx)</span>
+            <div class="flex items-center gap-3">
+                <button onclick="window.print()" class="bg-white hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm border border-slate-200 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Cetak Laporan
+                </button>
+                <label for="uploadExcel" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 px-4 py-2 rounded-lg text-sm text-white font-medium cursor-pointer transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    <span>Perbarui Data</span>
                     <input type="file" id="uploadExcel" accept=".xlsx, .xls, .csv" class="hidden" onchange="prosesFileExcel(event)">
                 </label>
             </div>
-        </div>
+        </header>
 
-        <div id="area-grafis-analitik" class="grid grid-cols-1 md:grid-cols-3 gap-6 non-cetak">
-            <div class="md:col-span-1 grid grid-cols-1 gap-4">
-                <div class="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-200">
-                    <div class="flex justify-between items-center">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Indikator Kinerja</p>
-                        <span class="text-sm bg-blue-50 text-blue-600 p-1.5 rounded-lg">🎯</span>
+        <div id="area-grafis-analitik" class="grid grid-cols-1 lg:grid-cols-3 gap-6 non-cetak">
+            
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-blue-100 transition-colors">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Total Indikator</p>
+                    <div class="flex items-end gap-3">
+                        <p id="stat-total" class="text-5xl font-black text-slate-800 tracking-tight">0</p>
+                        <p class="text-sm text-blue-600 font-medium mb-1.5">Kinerja SAKIP</p>
                     </div>
-                    <p id="stat-total" class="text-4xl font-black text-slate-900 mt-2">0</p>
-                    <p class="text-[10px] text-slate-400 mt-2 border-t border-slate-100 pt-1.5">Memuat dari Database Internal...</p>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all duration-200">
-                        <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Jumlah SKPK</p>
-                        <p id="stat-skpk" class="text-2xl font-black text-emerald-600 mt-1">0</p>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:border-slate-200 transition-colors">
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1">Jumlah SKPK</p>
+                        <p id="stat-skpk" class="text-2xl font-bold text-slate-700">0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all duration-200">
-                        <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Bidang Urusan</p>
-                        <p id="stat-bidang" class="text-2xl font-black text-amber-600 mt-1">0</p>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:border-slate-200 transition-colors">
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1">Bidang Urusan</p>
+                        <p id="stat-bidang" class="text-2xl font-bold text-slate-700">0</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm md:col-span-2 flex flex-col sm:flex-row items-center justify-around gap-6 hover:shadow-md transition-all duration-200">
-                <div class="text-center sm:text-left space-y-1 w-full sm:w-1/2">
-                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 justify-center sm:justify-start mb-2">
-                        <span class="w-1.5 h-4 rounded-full bg-indigo-600 block"></span> Persebaran Indikator
-                    </h3>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">Grafik rasio persentase 5 <b>Bidang Urusan</b> dengan program target/indikator terbanyak berdasarkan data.</p>
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm lg:col-span-2 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+                <div class="flex-1 space-y-3 z-10 text-center md:text-left">
+                    <h3 class="text-sm font-semibold text-slate-800">Distribusi Bidang Urusan</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto md:mx-0">Menampilkan 5 urusan pemerintahan dengan alokasi target dan indikator perencanaan terbanyak pada database.</p>
                 </div>
-                <div class="w-40 h-40 relative flex justify-center items-center">
+                <div class="w-48 h-48 relative z-10">
                     <canvas id="chartIndikator"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200/60">
-            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-5 pb-4 border-b border-slate-100 non-cetak">
-                <div>
-                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-1.5 h-4 rounded-full bg-slate-900 block"></span> Direktori Data (2020 - 2026)
-                    </h3>
-                    <p class="text-xs text-slate-400 mt-1">Seluruh data telah dimuat. Ketik untuk mencari secara instan.</p>
-                </div>
-                
-                <div class="flex items-center gap-2 w-full md:w-auto">
-                    <div class="relative w-full md:w-80">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">🔍</span>
-                        <input type="text" id="input-pencarian" onkeyup="filterData()" placeholder="Cari Indikator, SKPK, atau Bidang..." class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-100 bg-white non-cetak">
+                <div class="relative max-w-2xl mx-auto md:mx-0">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <button onclick="window.print()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm border border-blue-200">
-                        🖨️ Cetak
-                    </button>
+                    <input type="text" id="input-pencarian" onkeyup="filterData()" placeholder="Cari Indikator, SKPK, atau Bidang Perencanaan..." class="w-full pl-11 pr-4 py-3 text-sm bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-blue-50/30 transition-all placeholder-slate-400">
                 </div>
             </div>
             
-            <div class="overflow-x-auto rounded-xl border border-slate-100 bg-slate-50/30 h-[500px]">
+            <div class="overflow-x-auto h-[550px] relative">
                 <table class="w-full text-left border-collapse whitespace-nowrap">
-                    <thead class="sticky top-0 bg-slate-100 z-10 shadow-sm">
-                        <tr class="text-slate-500 text-[10px] font-bold uppercase tracking-wider border-b border-slate-200">
-                            <th class="p-4">Indikator Tujuan / Sasaran</th>
-                            <th class="p-4 text-center">Satuan</th>
-                            <th class="p-4">SKPK</th>
-                            <th class="p-4">Bidang Urusan</th>
-                            <th class="p-4 text-center bg-slate-200/50">2020</th>
-                            <th class="p-4 text-center bg-slate-200/50">2021</th>
-                            <th class="p-4 text-center bg-slate-200/50">2022</th>
-                            <th class="p-4 text-center bg-slate-200/50">2023</th>
-                            <th class="p-4 text-center bg-slate-200/50">2024</th>
-                            <th class="p-4 text-center bg-amber-50 text-amber-700">2025</th>
-                            <th class="p-4 text-center bg-blue-50 text-blue-700">2026</th>
+                    <thead class="sticky top-0 z-20 glass-header shadow-sm">
+                        <tr class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                            <th class="px-6 py-4 border-b border-slate-100 bg-white/50">Indikator Kinerja</th>
+                            <th class="px-4 py-4 border-b border-slate-100 bg-white/50 text-center">Satuan</th>
+                            <th class="px-4 py-4 border-b border-slate-100 bg-white/50">SKPK</th>
+                            <th class="px-4 py-4 border-b border-slate-100 bg-white/50">Bidang</th>
+                            <th class="px-3 py-4 border-b border-slate-100 bg-white/50 text-center">2020</th>
+                            <th class="px-3 py-4 border-b border-slate-100 bg-white/50 text-center">2021</th>
+                            <th class="px-3 py-4 border-b border-slate-100 bg-white/50 text-center">2022</th>
+                            <th class="px-3 py-4 border-b border-slate-100 bg-white/50 text-center">2023</th>
+                            <th class="px-3 py-4 border-b border-slate-100 bg-white/50 text-center">2024</th>
+                            <th class="px-4 py-4 border-b border-slate-100 bg-amber-50/50 text-amber-700 text-center">Target 25</th>
+                            <th class="px-4 py-4 border-b border-slate-100 bg-blue-50/50 text-blue-700 text-center">Target 26</th>
                         </tr>
                     </thead>
-                    <tbody id="tabel-body" class="text-slate-600 text-xs divide-y divide-slate-100">
+                    <tbody id="tabel-body" class="text-slate-600 text-xs divide-y divide-slate-50">
                         </tbody>
                 </table>
             </div>
         </div>
 
+        <div class="text-center pt-4 pb-8">
+            <p class="text-[10px] text-slate-400 font-medium tracking-wide">Pusat Data dan Informasi (Pusdatin) &copy; 2026</p>
+        </div>
     </div>
 
     <script>
         let dataGlobal = [];
         let diagramChart = null;
 
-        // =====================================================================
-        // DATABASE INTERNAL (COMPRESSED BASE64)
-        // 283 Baris Data Indikator telah dipadatkan ke dalam string ini
-        // =====================================================================
+        // DATA TERKOMPRESI (Biarkan Tetap Sama)
         const b64Data = "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";
 
-        // Inisialisasi Aplikasi (Membaca Data Saat Loading)
         window.addEventListener('DOMContentLoaded', () => {
             try {
-                // 1. Ekstrak Base64 menjadi Array Biner
                 const charData = atob(b64Data).split('').map(c => c.charCodeAt(0));
                 const binData = new Uint8Array(charData);
-                
-                // 2. Dekompresi dengan Pako (GZip)
                 const decompressedStr = pako.inflate(binData, { to: 'string' });
-                
-                // 3. Konversi menjadi Array JavaScript
                 const rawDataArray = JSON.parse(decompressedStr);
 
-                // 4. Transformasi Struktur Array ke Object
                 dataGlobal = rawDataArray.map(arr => ({
-                    "Indikator Tujuan/Sasaran": arr[0],
-                    "Satuan": arr[1],
-                    "2020": arr[2],
-                    "2021": arr[3],
-                    "2022": arr[4],
-                    "2023": arr[5],
-                    "2024": arr[6],
-                    "2025": arr[7],
-                    "2026": arr[8],
-                    "Bidang Urusan": arr[9],
-                    "SKPK": arr[10],
-                    "Bidang Perencanaan": arr[11]
+                    "Indikator Tujuan/Sasaran": arr[0], "Satuan": arr[1],
+                    "2020": arr[2], "2021": arr[3], "2022": arr[4], "2023": arr[5], "2024": arr[6],
+                    "2025": arr[7], "2026": arr[8],
+                    "Bidang Urusan": arr[9], "SKPK": arr[10], "Bidang Perencanaan": arr[11]
                 }));
 
-                // 5. Muat ke Tampilan Tael
                 updateDashboard(dataGlobal);
                 renderTabel(dataGlobal);
             } catch(e) {
-                console.error("Gagal mengekstrak database internal:", e);
-                alert("Kesalahan sistem memuat data internal.");
+                console.error("Gagal memuat database:", e);
+                alert("Gagal memuat database internal.");
             }
         });
 
-        // Fitur Ganti/Perbarui Data (Jika ada perubahan Excel di kemudian hari)
         function prosesFileExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -184,9 +172,7 @@
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
-                const namaSheetPertama = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[namaSheetPertama];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { defval: "" });
                 
                 if (jsonData.length > 0) {
                     dataGlobal = jsonData;
@@ -194,128 +180,80 @@
                     renderTabel(dataGlobal);
                     document.getElementById('input-pencarian').value = '';
                 } else {
-                    alert("File Excel Anda kosong atau rusak!");
+                    alert("File Excel kosong atau format salah.");
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        // Cetak Baris HTML ke Tabel
         function renderTabel(dataArray) {
             const tbody = document.getElementById('tabel-body');
             tbody.innerHTML = '';
 
             if (dataArray.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="p-8 text-center text-slate-400 font-medium">Data pencarian tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-slate-400 font-medium">Tidak ada data indikator kinerja yang cocok dengan pencarian.</td></tr>`;
                 return;
             }
 
-            // Batasi render sementara ke 300 data untuk optimasi peramban (lazy loading statik)
-            const iterasiData = dataArray.slice(0, 300);
-
-            let fragment = document.createDocumentFragment();
-
-            iterasiData.forEach(item => {
-                const indikator = item["Indikator Tujuan/Sasaran"] || item["Indikator"] || "-";
-                const satuan = item["Satuan"] || "-";
-                const skpk = item["SKPK"] || "-";
-                const bidangUrusan = item["Bidang Urusan"] || "-";
-                const bidangPerencanaan = item["Bidang Perencanaan"] || "";
-                
-                const t2020 = item["2020"] || item[2020] || "-";
-                const t2021 = item["2021"] || item[2021] || "-";
-                const t2022 = item["2022"] || item[2022] || "-";
-                const t2023 = item["2023"] || item[2023] || "-";
-                const t2024 = item["2024"] || item[2024] || "-";
-                const t2025 = item["2025"] || item[2025] || "-";
-                const t2026 = item["2026"] || item[2026] || "-";
-
-                const bidangGabungan = bidangPerencanaan ? `${bidangUrusan} <br><span class="text-[10px] text-slate-400 font-normal">(${bidangPerencanaan})</span>` : bidangUrusan;
-
+            const fragment = document.createDocumentFragment();
+            dataArray.slice(0, 300).forEach(item => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-blue-50/40 transition-all duration-150 group";
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                
+                const indikator = item["Indikator Tujuan/Sasaran"] || item["Indikator"] || "-";
+                const bidang = item["Bidang Perencanaan"] ? `<span class="block mt-1 text-[10px] text-slate-400 font-normal">(${item["Bidang Perencanaan"]})</span>` : '';
+
                 tr.innerHTML = `
-                    <td class="p-4 font-semibold text-slate-800 whitespace-normal min-w-[250px] max-w-sm leading-relaxed group-hover:text-indigo-700">${indikator}</td>
-                    <td class="p-4 text-center"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded-md text-[10px] font-bold border border-slate-200">${satuan}</span></td>
-                    <td class="p-4 text-slate-600 font-medium whitespace-normal min-w-[150px]">${skpk}</td>
-                    <td class="p-4 text-slate-500 whitespace-normal text-[11px] font-medium min-w-[150px]">${bidangGabungan}</td>
+                    <td class="px-6 py-4 font-medium text-slate-800 whitespace-normal min-w-[280px] max-w-sm leading-relaxed">${indikator}</td>
+                    <td class="px-4 py-4 text-center"><span class="bg-slate-100 text-slate-500 px-2.5 py-1 rounded-md text-[10px] font-semibold border border-slate-200/60">${item["Satuan"] || "-"}</span></td>
+                    <td class="px-4 py-4 text-slate-600 whitespace-normal min-w-[150px]">${item["SKPK"] || "-"}</td>
+                    <td class="px-4 py-4 text-slate-600 whitespace-normal text-[11px] font-medium min-w-[150px]">${item["Bidang Urusan"] || "-"}${bidang}</td>
                     
-                    <td class="p-4 text-center text-slate-500 border-x border-slate-100">${t2020}</td>
-                    <td class="p-4 text-center text-slate-500 border-r border-slate-100">${t2021}</td>
-                    <td class="p-4 text-center text-slate-500 border-r border-slate-100">${t2022}</td>
-                    <td class="p-4 text-center text-slate-500 border-r border-slate-100">${t2023}</td>
-                    <td class="p-4 text-center text-slate-500 border-r border-slate-100">${t2024}</td>
+                    <td class="px-3 py-4 text-center text-slate-500 border-x border-slate-50">${item["2020"] || "-"}</td>
+                    <td class="px-3 py-4 text-center text-slate-500 border-r border-slate-50">${item["2021"] || "-"}</td>
+                    <td class="px-3 py-4 text-center text-slate-500 border-r border-slate-50">${item["2022"] || "-"}</td>
+                    <td class="px-3 py-4 text-center text-slate-500 border-r border-slate-50">${item["2023"] || "-"}</td>
+                    <td class="px-3 py-4 text-center text-slate-500 border-r border-slate-50">${item["2024"] || "-"}</td>
                     
-                    <td class="p-4 text-center font-bold text-amber-700 bg-amber-50/40 border-r border-slate-100">${t2025}</td>
-                    <td class="p-4 text-center font-bold text-blue-700 bg-blue-50/40">${t2026}</td>
+                    <td class="px-4 py-4 text-center font-semibold text-amber-700 bg-amber-50/30 border-r border-slate-50">${item["2025"] || "-"}</td>
+                    <td class="px-4 py-4 text-center font-semibold text-blue-700 bg-blue-50/30">${item["2026"] || "-"}</td>
                 `;
                 fragment.appendChild(tr);
             });
-            
             tbody.appendChild(fragment);
         }
 
-        // Fitur Pencarian Data
         function filterData() {
             const kataKunci = document.getElementById('input-pencarian').value.toLowerCase();
-            
-            const hasilFilter = dataGlobal.filter(item => {
-                const isiBaris = Object.values(item).join(" ").toLowerCase();
-                return isiBaris.includes(kataKunci);
-            });
-
-            renderTabel(hasilFilter);
+            renderTabel(dataGlobal.filter(item => Object.values(item).join(" ").toLowerCase().includes(kataKunci)));
         }
 
-        // Kalkulasi Statistik & Grafik
         function updateDashboard(dataArray) {
             document.getElementById('stat-total').innerText = dataArray.length;
-            
-            const uniqueSKPK = new Set(dataArray.map(i => i["SKPK"]).filter(Boolean)).size;
-            document.getElementById('stat-skpk').innerText = uniqueSKPK;
+            document.getElementById('stat-skpk').innerText = new Set(dataArray.map(i => i["SKPK"]).filter(Boolean)).size;
             
             const arrayBidang = dataArray.map(i => i["Bidang Urusan"]).filter(Boolean);
-            const uniqueBidang = new Set(arrayBidang).size;
-            document.getElementById('stat-bidang').innerText = uniqueBidang;
+            document.getElementById('stat-bidang').innerText = new Set(arrayBidang).size;
 
             const countPerBidang = {};
-            arrayBidang.forEach(bidang => {
-                countPerBidang[bidang] = (countPerBidang[bidang] || 0) + 1;
-            });
-
+            arrayBidang.forEach(b => countPerBidang[b] = (countPerBidang[b] || 0) + 1);
             const sortedBidang = Object.entries(countPerBidang).sort((a, b) => b[1] - a[1]).slice(0, 5);
-            const labelsChart = sortedBidang.map(item => item[0]);
-            const dataChart = sortedBidang.map(item => item[1]);
 
             const ctx = document.getElementById('chartIndikator').getContext('2d');
-            if (diagramChart) { diagramChart.destroy(); }
-
+            if (diagramChart) diagramChart.destroy();
             diagramChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: labelsChart,
+                    labels: sortedBidang.map(i => i[0]),
                     datasets: [{
-                        data: dataChart,
-                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'],
-                        borderWidth: 3,
-                        borderColor: '#ffffff',
-                        hoverOffset: 6
+                        data: sortedBidang.map(i => i[1]),
+                        backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#6366f1', '#ec4899'],
+                        borderWidth: 2, borderColor: '#ffffff', hoverOffset: 4
                     }]
                 },
                 options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return ` ${context.label}: ${context.raw} Indikator`;
-                                }
-                            }
-                        }
-                    }, 
-                    cutout: '65%' 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, cutout: '70%' 
                 }
             });
         }
