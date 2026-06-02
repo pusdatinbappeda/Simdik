@@ -223,10 +223,10 @@
                 tr.setAttribute("onclick", `bukaModalGrafik(${index})`);
                 
                 // MENDUKUNG KOLOM DARI VERSI EXCEL LAMA & VERSI TERBARU
-                const indikator = item["Indikator Tujuan/Sasaran"] || item["INDIKATOR"] || item["Indikator"] || "-";
-                const satuan = item["Satuan"] || item["SATUAN"] || "-";
-                const skpk = item["SKPK"] || item["SUMBER DATA"] || "-";
-                const bidang = item["Bidang Urusan"] || item["BIDANG URUSAN"] || "-";
+                const indikator = item["Indikator Tujuan/Sasaran"] || item["INDIKATOR"] || item["Indikator"];
+                const satuan = item["Satuan"] || item["SATUAN"];
+                const skpk = item["SKPK"] || item["SUMBER DATA"];
+                const bidang = item["Bidang Urusan"] || item["BIDANG URUSAN"];
                 const bidangPerencanaan = item["Bidang Perencanaan"] || item["BIDANG PERENCANAAN"];
                 
                 const bidangHtml = bidangPerencanaan ? `<span class="block mt-1 text-[10px] text-slate-400 font-normal group-hover:text-blue-500">(${bidangPerencanaan})</span>` : '';
