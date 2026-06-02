@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard SAKIP & LKjIP - SIMDIK</title>
+    <title>Dashboard PUSDATIN - SIMDIK</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -41,7 +41,7 @@
         <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-slate-200 non-cetak">
             <div>
                 <p class="text-xs font-semibold text-blue-600 tracking-widest uppercase mb-1.5">Pusat Data dan Informasi</p>
-                <h1 class="text-3xl font-light text-slate-900 tracking-tight">Dashboard <span class="font-bold">SAKIP & LKjIP</span></h1>
+                <h1 class="text-3xl font-light text-slate-900 tracking-tight">Dashboard <span class="font-bold">PUSDATIN</span></h1>
                 <p class="text-sm text-slate-500 mt-1">Sistem Informasi Manajemen Data Indikator Kinerja SKPK</p>
             </div>
             <div class="flex items-center gap-3">
@@ -114,8 +114,6 @@
                             <th class="px-3 py-4 border-b border-slate-200 text-center">2022</th>
                             <th class="px-3 py-4 border-b border-slate-200 text-center">2023</th>
                             <th class="px-3 py-4 border-b border-slate-200 text-center">2024</th>
-                            <th class="px-4 py-4 border-b border-amber-200 bg-amber-50/80 text-amber-800 text-center">Target 25</th>
-                            <th class="px-4 py-4 border-b border-blue-200 bg-blue-50/80 text-blue-800 text-center">Target 26</th>
                         </tr>
                     </thead>
                     <tbody id="tabel-body" class="text-slate-600 text-xs divide-y divide-slate-100">
@@ -272,7 +270,7 @@
             document.getElementById('satuan-modal').innerText = item["Satuan"] || item["SATUAN"] || "-";
             document.getElementById('skpk-modal').innerText = item["SKPK"] || item["SUMBER DATA"] || "Tanpa SKPK";
 
-            const labels = ['2020', '2021', '2022', '2023', '2024', 'Target 25', 'Target 26'];
+            const labels = ['2020', '2021', '2022', '2023', '2024'];
             const rawData = [item["2020"], item["2021"], item["2022"], item["2023"], item["2024"], item["2025"], item["2026"]];
             
             const parsedData = rawData.map(val => {
