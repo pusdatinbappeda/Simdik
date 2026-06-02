@@ -170,7 +170,7 @@
                 dataGlobal = rawDataArray.map(arr => ({
                     "Indikator Tujuan/Sasaran": arr[0], "Satuan": arr[1],
                     "2020": arr[2], "2021": arr[3], "2022": arr[4], "2023": arr[5], "2024": arr[6],
-                    "Bidang Urusan": arr[7], "SKPK": arr[8], "Bidang Perencanaan": arr[9]
+                    "Bidang Urusan": arr[7], "Sumber": arr[8], "Bidang Perencanaan": arr[9]
                 }));
                 
                 dataTampilSaatIni = dataGlobal;
@@ -225,7 +225,7 @@
                 // MENDUKUNG KOLOM DARI VERSI EXCEL LAMA & VERSI TERBARU
                 const indikator = item["Indikator Tujuan/Sasaran"] || item["INDIKATOR"] || item["Indikator"];
                 const satuan = item["Satuan"] || item["SATUAN"];
-                const sumberData = item["Sumber Data"] || item["SUMBER DATA"];
+                const sumber = item["sumber"] || item["SUMBER DATA"];
                 const bidang = item["Bidang Urusan"] || item["BIDANG URUSAN"];
                 const bidangPerencanaan = item["Bidang Perencanaan"] || item["BIDANG PERENCANAAN"];
                 
@@ -234,7 +234,7 @@
                 tr.innerHTML = `
                     <td class="px-6 py-4 font-medium text-slate-800 whitespace-normal min-w-[280px] max-w-sm leading-relaxed group-hover:text-blue-700">${indikator}</td>
                     <td class="px-4 py-4 text-center"><span class="bg-slate-100 text-slate-500 px-2.5 py-1 rounded-md text-[10px] font-semibold border border-slate-200/60 group-hover:bg-blue-100 group-hover:text-blue-700">${satuan}</span></td>
-                    <td class="px-4 py-4 text-slate-600 whitespace-normal min-w-[150px] group-hover:text-slate-900">${skpk}</td>
+                    <td class="px-4 py-4 text-slate-600 whitespace-normal min-w-[150px] group-hover:text-slate-900">${sumber}</td>
                     <td class="px-4 py-4 text-slate-600 whitespace-normal text-[11px] font-medium min-w-[150px] group-hover:text-slate-900">${bidang}${bidangHtml}</td>
                     
                     <td class="px-3 py-4 text-center text-slate-500 border-x border-slate-50 group-hover:border-blue-100/50">${item["2020"] || "-"}</td>
