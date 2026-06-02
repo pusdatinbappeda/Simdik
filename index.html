@@ -107,7 +107,7 @@
                         <tr class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
                             <th class="px-6 py-4 border-b border-slate-200">Indikator Kinerja</th>
                             <th class="px-4 py-4 border-b border-slate-200 text-center">Satuan</th>
-                            <th class="px-4 py-4 border-b border-slate-200">SKPK / Sumber</th>
+                            <th class="px-4 py-4 border-b border-slate-200">Sumber Data</th>
                             <th class="px-4 py-4 border-b border-slate-200">Bidang Urusan</th>
                             <th class="px-3 py-4 border-b border-slate-200 text-center">2020</th>
                             <th class="px-3 py-4 border-b border-slate-200 text-center">2021</th>
@@ -225,7 +225,7 @@
                 // MENDUKUNG KOLOM DARI VERSI EXCEL LAMA & VERSI TERBARU
                 const indikator = item["Indikator Tujuan/Sasaran"] || item["INDIKATOR"] || item["Indikator"];
                 const satuan = item["Satuan"] || item["SATUAN"];
-                const skpk = item["SKPK"] || item["SUMBER DATA"];
+                const sumberData = item["Sumber Data"] || item["SUMBER DATA"];
                 const bidang = item["Bidang Urusan"] || item["BIDANG URUSAN"];
                 const bidangPerencanaan = item["Bidang Perencanaan"] || item["BIDANG PERENCANAAN"];
                 
